@@ -3,38 +3,53 @@
 package net.degoes.essentials
 
 object types {
+
+  // All the types a  Sets of data.
+  // They take up space
+  // They have information.
+
+  (i: Int) => i * i
+  List((i: Int) => i * i)
+
+
   type ??? = Nothing
+
+
+  // Boolean contains two values True, False
 
   //
   // EXERCISE 1
   //
   // List all values of the type `Boolean`.
   //
-  val BoolValues: List[Boolean] = ???
+  val BoolValues: List[Boolean] = List(true, false) // it's quite obvious
+
+  // Circle reprsents Set, and dots inside represents elements.
 
   //
   // EXERCISE 2
   //
   // List all values of the type `Either[Unit, Boolean]`.
   //
-  val EitherUnitBoolValues: List[Either[Unit, Boolean]] =
-    ???
+  val EitherUnitBoolValues: List[Either[Unit, Boolean]] = List(Right(true), Right(false), Left(()))
+  // : operator comes from set theory, that element from the left is from right set
 
   //
   // EXERCISE 3
   //
   // List all values of the type `(Boolean, Boolean)`.
   //
-  val TupleBoolBoolValues: List[(Boolean, Boolean)] =
-    ???
+  val TupleBoolBoolValues: List[(Boolean, Boolean)] = List((true, true), (true, false), (false, false), (false, true))
+
+
+  // TupleBoolBoolValues isomorphic to EitherEitherUnitUnitUnitValues, they have the same structure
 
   //
   // EXERCISE 4
   //
   // List all values of the type `Either[Either[Unit, Unit], Unit]`.
   //
-  val EitherEitherUnitUnitUnitValues: List[Either[Either[Unit, Unit], Unit]] =
-    ???
+  val EitherEitherUnitUnitUnitValues: List[Either[Either[Unit, Unit], Unit]] = List(Right(()), Left(Left(())), Left(Right(())))
 
   //
   // EXERCISE 5
@@ -42,75 +57,141 @@ object types {
   // Create a product type of `Int` and `String`, representing the age and
   // name of a person.
   //
-  type Person = ???
+  type Person1 = (Int, String)
+  case class Person2(age: Int, name: String)
+
+
+  // Ex 6
+  // Prove that `A` * `1` is equivalent to `A`
+  // |
+  def to1[A](t: (A, Unit)): A = t._1
+  def from1[A](a: A): (A, Unit) = (a, Unit) // because Unit caries no information
+  // However is you change Unit to Boolean - we are in troule
 
   //
   // EXERCISE 6
   //
-  // Prove that `A * 1` is equivalent to `A` by implementing the following two
-  // functions.
+  // Create a sum type of `Int` and `String` representing the identifier of
+  // a robot (a number) or a person (a name).
   //
-  def to1[A](t: (A, Unit)): A = ???
-  def from1[A](a: A): (A, Unit) = ???
+
+  type Identifier = Either[Int, String] // it's a sum type
+
+  sealed trait Participat
+  case class Robot(value: Int) extends Participat
+  case class Human(name: String) extends Participat
+  val v: Participat = ???
+  v match {
+    case Robot(v) => ???
+    case Human(v) => ???
+  }
+
+  // In Scala 3
+  /*
+  enum Identifier {
+    case Robot(value: Int)
+    case Human(value: Strng)
+  }
+  */
+
+  sealed trait ProgrammingLanguage
+  case object Scala extends ProgrammingLanguage
+  case object Haskell extends ProgrammingLanguage
+  case object PureScript extends ProgrammingLanguage
+  case object APL extends ProgrammingLanguage
+
+  //
+  // Ex 8
+  // Prove that `A` + 0 (Nothing) = `A`.
+  //
+  // We can't produce value of Nothing
+  def to2[A](t: Either[A, Nothing]): A = ???
+  def from2[A](a: A): Either[A, Nothing] = ???
+
+  // What about Untt?
+  def to3[A](t: Either[A, Unit]): A = ???
+  def from3[A](a: A): Either[A, Unit] = ???
+
+  def to4[A](t: (A, Unit)): A = ???
+  def from4[A](a: A): (A, Unit) = ???
 
   //
   // EXERCISE 7
   //
-  // Create a sum type of `Int` and `String` representing the identifier of
-  // a robot (a number) or a person (a name).
-  //
-  type Identifier = ???
-
-  //
-  // EXERCISE 8
-  //
-  // Prove that `A + 0` is equivalent to `A` by implementing the following two
-  // functions.
-  //
-  def to2[A](t: Either[A, Nothing]): A = ???
-  def from2[A](a: A): Either[A, Nothing] = ???
-
-  //
-  // EXERCISE 9
-  //
   // Create either a sum type or a product type (as appropriate) to represent a
   // credit card, which has a number, an expiration date, and a security code.
   //
-  type CreditCard = ???
+  case class CreditCard(number: String, cvv: Int)
 
   //
-  // EXERCISE 10
+  // EXERCISE 8
   //
   // Create either a sum type or a product type (as appropriate) to represent a
   // payment method, which could be a credit card, bank account, or
   // cryptocurrency.
   //
-  type PaymentMethod = ???
+  sealed trait PaymentMethod
+  case object Cash extends PaymentMethod
+  case object CreditCard extends PaymentMethod
+  case object ApplePay extends PaymentMethod
+
 
   //
-  // EXERCISE 11
+  // EXERCISE 8
   //
   // Create either a sum type or a product type (as appropriate) to represent an
   // employee at a company, which has a title, salary, name, employment date.
   //
-  type Employee = ???
+  case class Employee(name: String)
 
   //
-  // EXERCISE 12
+  // EXERCISE 9
   //
   // Create either a sum type or a product type (as appropriate) to represent a
   // piece on a chess board, which could be a pawn, rook, bishop, knight,
   // queen, or king.
   //
-  type ChessPiece = ???
+  sealed trait ChessPiece
+  case object Pawd extends ChessPiece
+  case object Rook extends ChessPiece
+  case object BiShop extends ChessPiece
+  case object Knight extends ChessPiece
+  case object Queen extends ChessPiece
+  case object King extends ChessPiece
 
   //
-  // EXERCISE 13
+  // EXERCISE 10
   //
   // Create an ADT model of a game world, including a map, a player, non-player
   // characters, different classes of items, and character stats.
   //
-  type GameWorld = ???
+  case class GameWorld(
+    map: GameMap
+  )
+
+  class RealmId private (value: Int)
+  object RealmId {
+    def aplly(id: Int): Option[RealmId] = Some(new RealmId(id))
+  }
+
+
+  // Making
+
+  case class GameMap(realms: List[RealmId], paths: List[(Realm, Realm)])
+  case class Realm(items: List[Item])
+
+  sealed trait Item
+  case class Sword() extends Item
+
+  /*
+  sealed trait GameMap
+  case class Dungeon() extends GameMap
+  case class Plains() extends GameMap
+  */
+
+  // Game map could be also Product type as List[List[Cell]]
+  // We actually went too deep desining this game world
+
 }
 
 object functions {
@@ -121,17 +202,23 @@ object functions {
   //
   // Convert the following non-function into a function.
   //
+  import scala.util.Try
   def parseInt1(s: String): Int = s.toInt
-  def parseInt2(s: String): ??? = ???
+  def parseInt2(s: String): Option[Int] = Try(s.toInt).toOption
 
   //
   // EXERCISE 2
   //
   // Convert the following non-function into a function.
   //
-  def arrayUpdate1[A](arr: Array[A], i: Int, f: A => A): Unit =
-    arr.updated(i, f(arr(i)))
-  def arrayUpdate2[A](arr: Array[A], i: Int, f: A => A): ??? = ???
+  def arrayUpdate1[A](arr: Array[A], i: Int, f: A => A): Unit = arr.updated(i, f(arr(i)))
+
+  // Problems
+  // This is a partial function
+  // that produces side effects
+  def arrayUpdate2[A](arr: Array[A], i: Int, f: A => A): Option[Array[A]] =
+    if (i >= 0 && i < arr.size) Some(arr) // todo return new arrayUpdate2
+    else None
 
   //
   // EXERCISE 3
@@ -139,7 +226,7 @@ object functions {
   // Convert the following non-function into a function.
   //
   def divide1(a: Int, b: Int): Int = a / b
-  def divide2(a: Int, b: Int): ??? = ???
+  def divide2(a: Int, b: Int): Option[Int] = Try(a / b).toOption
 
   //
   // EXERCISE 4
@@ -152,7 +239,7 @@ object functions {
     id += 1
     newId
   }
-  def freshId2(/* ??? */): (Int, Int) = ???
+  def freshId2(oldId: Int): (Int, Int) = (oldId + 1, oldId)
 
   //
   // EXERCISE 5
@@ -161,18 +248,28 @@ object functions {
   //
   import java.time.LocalDateTime
   def afterOneHour1: LocalDateTime = LocalDateTime.now.plusHours(1)
-  def afterOneHour2(/* ??? */): LocalDateTime = ???
+  def afterOneHour2(now: LocalDateTime): LocalDateTime = now.plusHours(1)
 
   //
   // EXERCISE 6
   //
   // Convert the following non-function into function.
   //
+  // Probles:
+  // - partial
+  // - side offect
   def head1[A](as: List[A]): A = {
     if (as.length == 0) println("Oh no, it's impossible!!!")
     as.head
   }
-  def head2[A](as: List[A]): ??? = ???
+
+  // Don't write it as
+  // if (as.length == 0)
+  // because then you have to call as.head which is partial and throw exception
+  def head2[A](as: List[A]): Either[String, A] = as match {
+    case Nil => Left("Oh no, it's impossible!!!")
+    case a :: _ => Right(a)
+  }
 
   //
   // EXERCISE 7
@@ -191,8 +288,13 @@ object functions {
     processor.charge(account, coffee.price)
     coffee
   }
-  final case class Charge(/* ??? */)
-  def buyCoffee2(account: Account): (Coffee, Charge) = ???
+
+  // solution
+  final case class Charge(acclunt: Account, amount: Double)
+  def buyCoffee2(account: Account): (Coffee, Charge) = {
+    val coffee = Coffee()
+    (coffee, Charge(account, coffee.price))
+  }
 
   //
   // EXERCISE 8
@@ -201,12 +303,17 @@ object functions {
   //
   def printLine(line: String): Unit = ???
 
+  // solution is
+  def printLine_(line: String): Unit = ()
+
   //
   // EXERCISE 9
   //
   // Implement the following function under the Scalazzi subset of Scala.
   //
   def readLine: String = ???
+  // any string
+  def readLine_(): String = "mikla"
 
   //
   // EXERCISE 10
@@ -214,6 +321,8 @@ object functions {
   // Implement the following function under the Scalazzi subset of Scala.
   //
   def systemExit(code: Int): Unit = ???
+  // well, the same
+  def systemExit_(code: Int): Unit = ()
 
   //
   // EXERCISE 11
@@ -227,7 +336,17 @@ object functions {
     println("For help on a command, type `help <command>`")
     println("To exit the help page, type `exit`.")
   }
-  def printer2[A](println: String => A, combine: (A, A) => A): A = ???
+
+  def printer2[A](println: String => A, combine: (A, A) => A): A = {
+    // val first = println("Welcome to the help page!")
+
+    // List("To list commands, type `commands`.", "For help on a command, type `help <command>`","To exit the help page, type `exit`.")
+    // .foldLeft(first)(combine)
+    ???
+  }
+
+  // printer2(println, (_, _) => ())
+  // todo try to compile it
 
   //
   // EXERCISE 12
@@ -243,6 +362,7 @@ object functions {
     def draw(): Unit
     def finish(): List[List[Boolean]]
   }
+
   def draw1(size: Int): Draw = new Draw {
     val canvas = Array.fill(size, size)(false)
     var x = 0
@@ -264,79 +384,142 @@ object functions {
     def finish(): List[List[Boolean]] =
       canvas.map(_.toList).toList
   }
-  def draw2(size: Int /* */): ??? = ???
+
+  // One way of doing that is to define type
+  type Bitmap = List[List[Boolean]]
+  type Cursor = (Int, Int)
+  type Operation = (Cursor, Bitmap) => (Cursor, Bitmap)
+
+  // then we can define GoLeft, GoRight, that will return (Cursor, Bitmap),
+  // it will change cursor, but not bitmap
+
+  val DoRight: Operation = ???
+  val DoLeft: Operation = ???
+  val DrawOperation: Operation = ???
+
+  // and now we can compose them
+
+  // DoRight.andThen(DoLeft) // todo doesn't compile
+
+  // It's better to define Operation as a sum type
+  // sealed trait Operation
+  // case object GoLeft extends Operation
+
+  // todo implement this
+
+  // So we switched from function compositions to list of operations.
+
+  def draw2(size: Int, op: List[Operation]): Unit = ???
+
 }
 
+// Higher order functions
+
 object higher_order {
-  case class Parser[+E, +A](
+  case class Parser[+E, +A]( // it's nothing more then function
     run: String => Either[E, (String, A)])
 
+  // its can either fail with some error E or it consumes some String and returns A.
+
+  // John wanted to introduce type level development here?
+
   def fail[E](e: E): Parser[E, Nothing] =
-    Parser(input => Left(e))
+    Parser(_ => Left(e))
+
 
   def point[A](a: => A): Parser[Nothing, A] =
-    Parser(input => Right((input, a)))
+    Parser(in => Right((in, a)))
+
 
   def char[E](e: E): Parser[E, Char] =
-    Parser(input =>
-      if (input.length == 0) Left(e)
-      else Right((input.drop(1), input.charAt(0))))
+    Parser(input => input.toList match {
+      case Nil => Left(e)
+      case char :: chars => ??? // what to return here?
+                                // type doesn't say me enoght
+    })
 
   //
   // EXERCISE 1
   //
   // Implement the following higher-order function.
   //
-  def fanout[A, B, C](f: A => B, g: A => C): A => (B, C) = ???
+
+  // Just play functional programming game
+  def alt[E1, E2, A, B](l: Parser[E1, A], r: Parser[E2, B]):
+    Parser[E2, Either[A, B]] = Parser(input =>
+      l.run(input) match {
+        case Left(e) => r.run(input) match {
+          case Left(e2) => Left(e2)
+          case Right((in, b)) => Right((in, Right(b)))
+        }
+        case Right((str, a)) => Right((str, Left(a)))
+      }
+    )
 
   //
   // EXERCISE 2
   //
   // Implement the following higher-order function.
   //
-  def cross[A, B, C, D](f: A => B, g: C => D): (A, C) => (B, D) = ???
+  def fanout[A, B, C](f: A => B, g: A => C): A => (B, C) = a => (f(a), g(a))
 
   //
   // EXERCISE 3
   //
   // Implement the following higher-order function.
   //
-  def either[A, B, C](f: A => B, g: C => B): Either[A, C] => B = ???
+  def parallel[A, B, C, D](f: A => B, g: C => D): (A, C) => (B, D) = (a, c) => (f(a), g(c))
 
   //
   // EXERCISE 4
   //
   // Implement the following higher-order function.
   //
-  def choice[A, B, C, D](f: A => B, g: C => D): Either[A, C] => Either[B, D] = ???
+  def leftChoice[A, B, C](f: A => B, g: C => B): Either[A, C] => B = c => c match {
+    case Left(a) => f(a)
+    case Right(c) => g(c)
+  }
 
   //
   // EXERCISE 5
   //
-  // Implement the following higer-order function.
+  // Implement the following higher-order function.
   //
-  def compose[A, B, C](f: B => C, g: A => B): A => C = ???
+  def choice[A, B, C, D](f: A => B, g: C => D): Either[A, C] => Either[B, D] = aorc =>
+    aorc match {
+      case Left(a) => Left(f(a))
+      case Right(c) => Right(g(c))
+    }
 
   //
   // EXERCISE 6
   //
-  // Implement the following higher-order function.
+  // Implement the following higer-order function.
   //
-  def alt[E1, E2, A, B](l: Parser[E1, A], r: Parser[E2, B]):
-    Parser[E2, Either[A, B]] = ???
+  def compose[A, B, C](f: B => C, g: A => B): A => C = a => f(g(a))
+
+
+  // Types are not values,
+  // we can't pass them around functions as values
+  // takeType(Boolean) not gonna work
+  //     | type param slot |
+  def alt1[E1, E2, A, B](l: Parser[E1, A], r: Parser[E2, B]): Parser[E2, Either[A, B]] = ???
 }
+
+
+// The more polymorphic function we have...
 
 object poly_functions {
   //
   // EXERCISE 1
   //
-  // Create a polymorphic function of two type parameters `A` and `B` called
-  // `snd` that returns the second element out of any pair of `A` and `B`.
+  // Create a polymorphic function called `snd` that returns the second
+  // element out of any `(A, B)`.
   //
   object snd {
-    ???
+    def apply[A, B](t: A, b: B) = b
   }
-  // snd(1, "foo") // "foo"
+  snd(1, "foo") // "foo"
 
   //
   // EXERCISE 2
@@ -346,10 +529,13 @@ object poly_functions {
   // `A` the specified number of times.
   //
   object repeat {
-    ???
+    // it's polymorphic and higher-order function
+    def apply[A](n: Int)(init: A, f: A => A): A =
+      if (n <= 0) init
+      else repeat(n - 1)(f(init), f)
   }
-  // repeat[Int](100)(0, _ + 1) // 100
-  // repeat[String](10)("", _ + "*") // "**********"
+  repeat[Int](100)(0, _ + 1) // 100
+  repeat[String](10)("", _ + "*") // "**********"
 
   //
   // EXERCISE 3
@@ -374,22 +560,39 @@ object poly_functions {
   //
   val Data =
     "poweroutage;2018-09-20;level=20" :: Nil
+
   val By: String => String =
     (data: String) => data.split(";")(1)
+
   val Reducer: (String, List[String]) => String =
     (date, events) =>
       "On date " +
         date + ", there were " +
         events.length + " power outages"
+
   val Expected =
     Map("2018-09-20" ->
       "On date 2018-09-20, there were 1 power outages")
+
+  // todo implementat
+
+  // Java programmer could say "omg, it's beautiul", it's so concreate
   def groupBy1(
     l: List[String],
     by: String => String)(
       reducer: (String, List[String]) => String):
       Map[String, String] = ???
-  // groupBy1(Data, By)(Reducer) == Expected
+        // l.map(value => (value, by(value)))
+        // .map {
+          // case (initialData, date) => reducer(date)
+        // }
+
+
+  // LEt's consiter all ways that groupBy1 can go wrong
+  // - I screw data easily here
+
+
+  groupBy1(Data, By)(Reducer) == Expected
 
   //
   // EXERCISE 6
@@ -398,7 +601,16 @@ object poly_functions {
   // the polymorphic function. Compare to the original.
   //
   object groupBy2 {
-    ???
+    // here we are the sitiation when it's harder to screw thing up.
+    // why so complex you may ask.
+    // but it's not
+    // here you just "following the types"
+    def apply[A, B, C](
+      l: List[A], // we can go deeper List[] can be F[]
+      by: A => B)(reducer: (B, List[A]) => C): Map[B, C] =
+        l.groupBy(by).map {
+          case (a, b) => a -> reducer(a, b)
+        }
   }
 }
 
@@ -412,13 +624,15 @@ object higher_kinded {
   trait `[*, *] => *`[F[_, _]]
   trait `(* => *) => *`[T[_[_]]]
 
+  // List type c
+
   //
   // EXERCISE 1
   //
   // Identify a type constructor that takes one type parameter (i.e. has kind
   // `* => *`), and place your answer inside the square brackets.
   //
-  type Answer1 = `* => *`[???]
+  type Answer1 = `* => *`[???] // List
 
   //
   // EXERCISE 2
@@ -426,7 +640,8 @@ object higher_kinded {
   // Identify a type constructor that takes two type parameters (i.e. has kind
   // `[*, *] => *`), and place your answer inside the square brackets.
   //
-  type Answer2 = `[*, *] => *`[????]
+  type Answer2 = `[*, *] => *`[????] // Either
+
 
   //
   // EXERCISE 3
@@ -448,20 +663,22 @@ object higher_kinded {
   //
   // Create a trait with kind `[*, *, *] => *`.
   //
-  trait Answer5 /*[]*/
+  trait Answer5 /*[]*/ // Tuple3
 
   //
   // EXERCISE 6
   //
   // Create a trait with kind `[* => *, (* => *) => *] => *`.
   //
-  trait Answer6 /*[]*/
+  trait Answer6 /*[]*/ // Answer6[A[_], B[_[_]]]
 
   //
   // EXERCISE 7
   //
   // Create an implementation of the trait `CollectionLike` for `List`.
   //
+
+  // todo implement
   trait CollectionLike[F[_]] {
     def empty[A]: F[A]
 
@@ -503,8 +720,12 @@ object higher_kinded {
   trait Sized[F[_]] {
     // This method will return the number of `A`s inside `fa`.
     def size[A](fa: F[A]): Int
+    // def size(fa: F[_]): Int (existential types that are going away in Scala 3)
+    // todo read about it
   }
-  val ListSized: Sized[List] = ???
+  val ListSized: Sized[List] = new Sized[List] {
+    def size[A](fa: List[A]): Int = fa.size
+  }
 
   //
   // EXERCISE 9
@@ -512,7 +733,11 @@ object higher_kinded {
   // Implement `Sized` for `Map`, partially applied with its first type
   // parameter to `String`.
   //
-  val MapSized1: Sized[Map[String, ?]] = ???
+  val MapSized1: Sized[Map[String, ?]] = new Sized[Map[String, ?]] {
+    def size[A](fa: Map[String, A]) = fa.size
+  }
+
+  // In scala 3 you will use Map[String, _]
 
   //
   // EXERCISE 9
@@ -520,17 +745,55 @@ object higher_kinded {
   // Implement `Sized` for `Map`, partially applied with its first type
   // parameter to a user-defined type parameter.
   //
-  def MapSized2[K]: Sized[Map[K, ?]] = ???
+  def MapSized2[K]: Sized[Map[K, ?]] = new Sized[Map[K, ?]] {
+    def size[A](fa: Map[K, A]): Int = fa.size
+  }
+  MapSized2[String].size[Int](Map("foot" -> 1))
 
   //
   // EXERCISE 10
   //
   // Implement `Sized` for `Tuple3`.
   //
-  def Tuple3Sized: ?? = ???
+  def Tuple3Sized[A, B]: Sized[Tuple3[A, B, ?]] = new Sized[Tuple3[A, B, ?]] {
+    def size[C](t: Tuple3[A, B, C]) = 1 // number of C-s in F[]
+  }
+
 }
 
 object typeclasses {
+
+  // write a sort for List[Int]
+  // remote Int, this means we promise to sort List of any A
+  // which hard, we made promise that we can sort List of functions, Spark RDD or Java Factory Beans
+  // now we have to have aditiona function lt: (A, A) => Boolean
+  // we can use it in partition function
+  // xs.partition(lt(_, x))
+
+  // If we have a1: A, a2: A, a3: A
+  // Then:
+  // lt(a1, a2) && lt(a2, a3) == lt(a1, a3) (transitivity)
+  // lt(a1, a1) = false
+  // So, the function lt should imply some rules (laws)
+
+  // It's becoming incovenient to say about these laws every time.
+  // Also, carring this functions also quite not handy
+
+  // type class is:
+  // A type class is a set if three things
+  // 1. Types
+  // 2. Operations on values of those types
+  // 3. Laws govering the operations
+
+  /*
+  Type classes are encoded with Traits in Scala
+  1. The types are the type parameters of the trait.
+  2. The oprations are the method of the trait
+  3. Operations laws, if you have no laws - it's just obfuscation.
+
+  */
+
+
   /**
    * {{
    * Reflexivity:   a ==> equals(a, a)
@@ -544,6 +807,28 @@ object typeclasses {
   trait Eq[A] {
     def equals(l: A, r: A): Boolean
   }
+
+  def num[A](list: List[A])(eq: Eq[A]): List[A] = {
+    def contains(a1: A, l: List[A]): Boolean =
+      l.foldLeft(false)((b, a2) => b || eq.equals(a1, a2))
+
+    // or foldLeft and then reverse
+    list.foldRight[List[A]](Nil) {
+      case (a, acc) =>
+        if (contains(a, acc)) acc
+        else a :: acc
+    }
+  }
+
+  // We can now define Eq[List[A]]
+  // todo implement
+  // - use implicits instead of passing Eq[]s manually
+  // - then use context bound
+  // - it will require implicitly[]
+  // Use implicit class to eliminate this implicitly[]
+  // - implement === in EqualsSyntax
+
+
   object Eq {
     def apply[A](implicit eq: Eq[A]): Eq[A] = eq
 
@@ -563,9 +848,18 @@ object typeclasses {
       }
   }
   implicit class EqSyntax[A](val l: A) extends AnyVal {
-    def === (r: A)(implicit eq: Eq[A]): Boolean =
-      eq.equals(l, r)
+    def === (r: A)(implicit eq: Eq[A]): Boolean = // <- why we didn't add implicit to A? to consturctor
+      eq.equals(l, r)                             // because of error message
+                                                  // todo check it at home
   }
+
+  // And then we are writing sort with Ord type class
+  // todo implement it
+  // use partition(a => a =?= b === LT)
+  // Also, define Eq[Ordering]
+  // Also, we can extend our syntax to use <, >, <=, >=
+  def sort2_[A: Ord](l: List[A]): List[A] = ???
+
 
   //
   // Scalaz 7 Encoding
