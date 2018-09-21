@@ -986,7 +986,7 @@ object zio_schedule {
 
 }
 
-object zio_interop {
+object zio_interop extends App {
 
   implicit class FixMe[A](a: A) {
     def ? = ???
@@ -1057,6 +1057,9 @@ object zio_interop {
       f <- IO.forkAll(List(w1.work, w2.work, w3.work))
       _ <- f.join
     } yield ()
+
+  override def run(args: List[String]): IO[Nothing, zio_interop.ExitStatus] = ???
+
 }
 
 object zio_ref {
